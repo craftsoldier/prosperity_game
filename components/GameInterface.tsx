@@ -28,6 +28,17 @@ export default function GameInterface({
   // Check if today's entry exists
   const todaysEntry = entries.find((e) => e.day_number === currentDay)
 
+  if (!session) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Session Error</h1>
+          <p className="text-gray-700">Unable to load your game session.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50">
       {/* Header */}

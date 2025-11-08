@@ -1,13 +1,13 @@
-import { currentUser } from '@clerk/nextjs/server'
+import { getCurrentUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { supabaseAdmin } from '@/lib/supabase'
 import GameInterface from '@/components/GameInterface'
 
 export default async function GamePage() {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) {
-    redirect('/sign-in')
+    redirect('/login')
   }
 
   try {
@@ -32,7 +32,7 @@ export default async function GamePage() {
         .from('game_sessions')
         .insert({
           user_id: user.id,
-          user_email: user.emailAddresses[0]?.emailAddress || '',
+          user_email: user.email,
           current_day: 1,
           game_version: 'incremental',
         })

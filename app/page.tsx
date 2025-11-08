@@ -1,9 +1,9 @@
-import { currentUser } from '@clerk/nextjs/server'
+import { getCurrentUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
 export default async function Home() {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (user) {
     redirect('/game')
@@ -52,16 +52,10 @@ export default async function Home() {
 
           <div className="flex gap-4 justify-center">
             <Link
-              href="/sign-up"
+              href="/login"
               className="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
             >
               Get Started
-            </Link>
-            <Link
-              href="/sign-in"
-              className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold border-2 border-purple-600 hover:bg-purple-50 transition"
-            >
-              Sign In
             </Link>
           </div>
         </div>

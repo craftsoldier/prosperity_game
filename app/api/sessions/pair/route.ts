@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const { sessionId, friendEmail } = body
 
     // Find friend's session by email
-    const { data: friendSession, error: friendError } = await supabase
+    const { data: friendSession, error: friendError } = await supabaseAdmin
       .from('game_sessions')
       .select('*')
       .eq('user_email', friendEmail)
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Update current user's session with friend's user_id
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('game_sessions')
       .update({
         paired_with_user_id: friendSession.user_id,
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     if (error) throw error
 
     // Also pair the friend back (mutual pairing)
-    await supabase
+    await supabaseAdmin
       .from('game_sessions')
       .update({
         paired_with_user_id: data.user_id,

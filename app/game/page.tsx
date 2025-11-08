@@ -1,6 +1,6 @@
 import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import GameInterface from '@/components/GameInterface'
 
 export default async function GamePage() {
@@ -12,7 +12,7 @@ export default async function GamePage() {
 
   try {
     // Get or create game session
-    const { data: sessions, error: sessionsError } = await supabase
+    const { data: sessions, error: sessionsError } = await supabaseAdmin
       .from('game_sessions')
       .select('*')
       .eq('user_id', user.id)
@@ -28,7 +28,7 @@ export default async function GamePage() {
 
     // Create session if doesn't exist
     if (!session) {
-      const { data: newSession, error: createError } = await supabase
+      const { data: newSession, error: createError } = await supabaseAdmin
         .from('game_sessions')
         .insert({
           user_id: user.id,
@@ -52,7 +52,7 @@ export default async function GamePage() {
     }
 
     // Get all entries for this session
-    const { data: entries, error: entriesError } = await supabase
+    const { data: entries, error: entriesError } = await supabaseAdmin
       .from('daily_entries')
       .select('*')
       .eq('session_id', session.id)
@@ -65,14 +65,14 @@ export default async function GamePage() {
     // Get paired user's data if exists
     let pairedUserData = null
     if (session.paired_with_user_id) {
-      const { data: pairedSession, error: pairedError } = await supabase
+      const { data: pairedSession, error: pairedError } = await supabaseAdmin
         .from('game_sessions')
         .select('*')
         .eq('user_id', session.paired_with_user_id)
         .single()
 
       if (!pairedError && pairedSession) {
-        const { data: pairedEntries } = await supabase
+        const { data: pairedEntries } = await supabaseAdmin
           .from('daily_entries')
           .select('*')
           .eq('session_id', pairedSession.id)

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const { entryId, userId, userEmail, reaction } = body
 
     // Check if user already reacted to this entry
-    const { data: existingReaction } = await supabase
+    const { data: existingReaction } = await supabaseAdmin
       .from('reactions')
       .select('*')
       .eq('entry_id', entryId)
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     if (existingReaction) {
       // Update existing reaction
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('reactions')
         .update({ reaction })
         .eq('id', existingReaction.id)
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, data })
     } else {
       // Create new reaction
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('reactions')
         .insert({
           entry_id: entryId,

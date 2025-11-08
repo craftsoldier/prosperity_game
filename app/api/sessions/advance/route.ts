@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const { sessionId } = body
 
     // Get current session
-    const { data: session, error: sessionError } = await supabase
+    const { data: session, error: sessionError } = await supabaseAdmin
       .from('game_sessions')
       .select('*')
       .eq('id', sessionId)
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if current day has an entry
-    const { data: entry } = await supabase
+    const { data: entry } = await supabaseAdmin
       .from('daily_entries')
       .select('*')
       .eq('session_id', sessionId)
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     // Advance to next day
     const newDay = Math.min(session.current_day + 1, 30)
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('game_sessions')
       .update({
         current_day: newDay,

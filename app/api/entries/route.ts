@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const { sessionId, userId, dayNumber, amount, purchases } = body
 
     // Check if entry already exists
-    const { data: existingEntry } = await supabase
+    const { data: existingEntry } = await supabaseAdmin
       .from('daily_entries')
       .select('*')
       .eq('session_id', sessionId)
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     if (existingEntry) {
       // Update existing entry
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('daily_entries')
         .update({ purchases, amount })
         .eq('id', existingEntry.id)
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, data })
     } else {
       // Create new entry
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('daily_entries')
         .insert({
           session_id: sessionId,
